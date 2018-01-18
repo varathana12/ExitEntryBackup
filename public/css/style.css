@@ -439,6 +439,9 @@ Select-placeholder, .Select--single > .Select-control .Select-value {
     padding-right:20px !important;
     vertical-align: middle;
 }
+.Select-menu {
+  max-height: 150px !important;
+}
 .Select-option {
     height:40px;
     line-height: 40px;

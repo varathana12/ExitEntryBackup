@@ -79,6 +79,7 @@ class C4 extends BaseABScreen {
         this.handleData = this.handleData.bind(this)
         this.handleVisitor = this.handleVisitor.bind(this);
         this.handleConfirmer = this.handleConfirmer.bind(this)
+
     }
 
     componentWillMount() {
@@ -111,22 +112,24 @@ class C4 extends BaseABScreen {
         this.props.setTimeout(this.handleTimeout.bind(this), TIME_OUT)
     }
     handleVisitor (selectedVistor){
-        this.setState({ [MEMBER_ID]:parseInt(`${selectedVistor.value}`)},function () {
-            if(("#selectedVisitor span#react-select-2--value-item")[0])
-                $("#selectedVisitor span#react-select-2--value-item")[0].innerHTML = `${selectedVistor.value}`
 
-            if(isInHall(this.state.visitorInHall, parseInt(`${selectedVistor.value}`)))
-                this.setState({validMemberId: {status: false, message: "「こちらのメールアドレスでは現在、入館できません。」"}})
-            else
-                this.setState({validMemberId: {status: true, message: ""}})
+            this.setState({ [MEMBER_ID]:parseInt(`${selectedVistor.value}`)},function () {
+                if($("#selectedVisitor span.Select-value-label")[0])
+                    $("#selectedVisitor span.Select-value-label")[0].innerHTML = `${selectedVistor.value}`
 
-        });
+                if(isInHall(this.state.visitorInHall, parseInt(`${selectedVistor.value}`)))
+                    this.setState({validMemberId: {status: false, message: "「こちらのメールアドレスでは現在、入館できません。」"}})
+                else
+                    this.setState({validMemberId: {status: true, message: ""}})
+
+            });
+
     }
 
     handleConfirmer(selectedConfirmer){
         this.setState({ [EXIT_CONFIRMER_ID]:parseInt(`${selectedConfirmer.value}`)},function () {
-            if($("#selectedConfirmer span#react-select-3--value-item")[0])
-                $("#selectedConfirmer span#react-select-3--value-item")[0].innerHTML = `${selectedConfirmer.value}`
+            if($("#selectedConfirmer span.Select-value-label")[0])
+                $("#selectedConfirmer span.Select-value-label")[0].innerHTML = `${selectedConfirmer.value}`
 
             this.setState({validConfirmId: {status: true, message: ""}})
         });
@@ -168,7 +171,13 @@ class C4 extends BaseABScreen {
             , [ENTRY_EXIT_INFORMATION_ID]: data[ENTRY_EXIT_INFORMATION_ID]
             , validMemberId: {status: true, message: ''}
             , validEntryDateTime: {status: true, message: ''}
-        })
+        },function () {
+                if ($("#selectedConfirmer span.Select-value-label")[0])
+                    $("#selectedConfirmer span.Select-value-label")[0].innerHTML = confirmer_id
+                if ($("#selectedVisitor span.Select-value-label")[0])
+                    $("#selectedVisitor span.Select-value-label")[0].innerHTML = member_id
+            }
+        )
 
         $("#admin4-exit").datetimepicker({
             format: 'Y-m-d H:i',
@@ -284,6 +293,7 @@ class C4 extends BaseABScreen {
         this.props.history.push(`index`);
     }
 
+
     render() {
 
         const Amount = this.generateDate().map(item => {
@@ -291,6 +301,8 @@ class C4 extends BaseABScreen {
                 <option key={item.key} value={item.key}>{item.name}</option>
             )
         })
+
+
 
         return (
             <main className="admin-main">
@@ -306,6 +318,7 @@ class C4 extends BaseABScreen {
                         <dd id={'selectedVisitor'}>
                             <Select
                             name="form-field-name"
+                            disabled={!this.isRegisterPage}
                             placeholder={"会社名または氏名を入力すると絞り込めます。"}
                             value={this.state[MEMBER_ID]}
                             onChange={this.handleVisitor}
